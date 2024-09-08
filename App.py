@@ -28,10 +28,6 @@ def predict(carat, cut, color, clarity, depth, table, x, y, z, x_mean, x_std, th
     # Add a bias term (intercept)
     input = np.concatenate(([1.0], input))  # Ensure input is a 1D array
     
-    # Check shapes for debugging
-    print(f"Input shape: {input.shape}")
-    print(f"Theta shape: {theta.shape}")
-
     # Perform prediction using the model
     prediction = input.dot(theta)
     return prediction
@@ -54,7 +50,11 @@ z = st.number_input('Diamond Depth (Z) in mm: ', min_value=0.1, max_value=100.0,
 if st.button('Predict Price'):
     try:
         out = predict(carat, cut, color, clarity, depth, table, x, y, z, x_mean, x_std, theta)
-        st.success(f"Giá dự đoán của viên kim cương là: ${out:.2f} USD")
+        # Ensure `out` is a scalar value before formatting
+        if np.issubdtype(out.dtype, np.number):
+            st.success(f"Giá dự đoán của viên kim cương là: ${out[0]:.2f} USD")
+        else:
+            st.error(f"Đã xảy ra lỗi khi dự đoán giá: {out}")
     except Exception as e:
         st.error(f"Đã xảy ra lỗi: {e}")
 
