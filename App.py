@@ -6,7 +6,7 @@ x_mean = model['x_mean']
 x_std = model['x_std']
 theta = model['theta']
 
-@st.cache
+@st.cache_resourse
 def predict(carat, cut, color, clarity, depth, table, x, y, z, x_mean, x_std, theta):
     color_mapping = {'J': 0, 'I': 1, 'H': 2, 'G': 3, 'F': 4, 'E': 5, 'D': 6}
     cut_mapping = {'Fair': 0, 'Good': 1, 'Very Good': 2, 'Premium': 3, 'Ideal': 4}
