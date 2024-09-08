@@ -7,7 +7,7 @@ x_mean = model['x_mean']
 x_std = model['x_std']
 theta = model['theta']
 
-@st.cache_resource
+@st.cache
 def predict(carat, cut, color, clarity, depth, table, x, y, z, x_mean, x_std, theta):
     # Mappings for categorical features
     color_mapping = {'J': 0, 'I': 1, 'H': 2, 'G': 3, 'F': 4, 'E': 5, 'D': 6}
@@ -20,14 +20,18 @@ def predict(carat, cut, color, clarity, depth, table, x, y, z, x_mean, x_std, th
     clarity = clarity_mapping.get(clarity, 0)
 
     # Prepare the input array
-    input = np.array([carat, depth, table, x, y, z, cut, color, clarity], dtype = 'float')
+    input = np.array([carat, depth, table, x, y, z, cut, color, clarity], dtype='float')
     
     # Standardize the input
     input = (input - x_mean) / x_std
 
     # Add a bias term (intercept)
-    b = np.array([[1.0]])
-    input = np.concatenate((b, input), axis = 1)
+    input = np.concatenate(([1.0], input))  # Ensure input is a 1D array
+    
+    # Check shapes for debugging
+    print(f"Input shape: {input.shape}")
+    print(f"Theta shape: {theta.shape}")
+
     # Perform prediction using the model
     prediction = input.dot(theta)
     return prediction
@@ -48,5 +52,9 @@ z = st.number_input('Diamond Depth (Z) in mm: ', min_value=0.1, max_value=100.0,
 
 # Prediction button
 if st.button('Predict Price'):
-    out = predict(carat, cut, color, clarity, depth, x, y, z, x_mean, x_std, theta)
-    st.success(f"Giá dự đoán của viên kim cương là: ${out[0,0]:.2f} USD")
+    try:
+        out = predict(carat, cut, color, clarity, depth, table, x, y, z, x_mean, x_std, theta)
+        st.success(f"Giá dự đoán của viên kim cương là: ${out:.2f} USD")
+    except Exception as e:
+        st.error(f"Đã xảy ra lỗi: {e}")
+
