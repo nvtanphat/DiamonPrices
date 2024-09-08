@@ -44,7 +44,7 @@ if st.button('Predict Price'):
     try:
         out = predict(carat, cut, color, clarity, depth, table, x, y, z, x_mean, x_std, theta)
         if np.issubdtype(out.dtype, np.number):
-            st.success(f"Giá dự đoán của viên kim cương là: ${out[0]:.2f} USD")
+            st.success(f"Giá dự đoán của viên kim cương là: ${out[0][0]:.2f} USD")
         else:
             st.error(f"Đã xảy ra lỗi khi dự đoán giá: {out}")
     except Exception as e:
