@@ -1,12 +1,20 @@
 import streamlit as st
 import numpy as np
 from PIL import Image
+import os
 
 # Load the model
 model = np.load('weight.npz')
 x_mean = model['x_mean']
 x_std = model['x_std']
 theta = model['theta']
+
+# Ensure the image file exists
+image_path = 'cut_image.jpg'
+if not os.path.exists(image_path):
+    st.error(f"Hình ảnh {image_path} không tìm thấy. Vui lòng kiểm tra đường dẫn.")
+else:
+    cut_image = Image.open(image_path)
 
 @st.cache_resource
 def predict(carat, cut, color, clarity, depth, table, x, y, z, x_mean, x_std, theta):
@@ -36,10 +44,10 @@ def predict(carat, cut, color, clarity, depth, table, x, y, z, x_mean, x_std, th
 # Streamlit UI elements
 st.title('Diamond Prices Prediction')
 
-# Display an image for diamond cut ratings
-st.header('Hướng dẫn cắt kim cương:')
-cut_image = Image.open('cut_image.jpg')  # Đảm bảo hình ảnh nằm trong thư mục dự án của bạn
-st.image(cut_image, caption='Các loại cắt kim cương', use_column_width=True)
+# Display an image for diamond cut ratings if it exists
+if os.path.exists(image_path):
+    st.header('Hướng dẫn cắt kim cương:')
+    st.image(cut_image, caption='Các loại cắt kim cương', use_column_width=True)
 
 st.header('Vui lòng nhập thông tin về viên kim cương bạn muốn mua:')
 carat = st.number_input('Carat Weight:', min_value=0.1, max_value=10.0, value=1.0, step=0.01)
