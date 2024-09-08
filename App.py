@@ -48,5 +48,5 @@ z = st.number_input('Diamond Depth (Z) in mm: ', min_value=0.1, max_value=100.0,
 
 # Prediction button
 if st.button('Predict Price'):
-    price = predict(carat, cut, color, clarity, depth, table, x, y, z)
-    st.success(f"Giá dự đoán của viên kim cương là: ${price:.2f} USD")
+    out = predict(carat, cut, color, clarity, depth, x, y, z, x_mean, x_std, theta)
+    st.success(f"Giá dự đoán của viên kim cương là: ${out[0,0]:.2f} USD")
